@@ -18,12 +18,15 @@ on:
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
-        value: ${{ env.ARTIFACT_NAME }}
+        value: ${{ jobs.publish_job.outputs.artifact_name }}
 
 jobs:
-  deploy:
+  publish_job:
 
     runs-on: self-hosted
+
+    outputs:
+        artifact_name: ${{ env.ARTIFACT_NAME }}
 
     steps:
     - uses: actions/checkout@v3
@@ -36,7 +39,7 @@ jobs:
          echo ("VERSION=" + $ver) >> $env:GITHUB_ENV
          echo ("Set VERSION variable to: " + $ver)
          
-    - name: Set Variable ARTIFACT_NAME_MODULE_1
+    - name: Set Variable ARTIFACT_NAME
       run: |
          chcp 65001 #set code page to utf-8
          $artifact_name = $env:INPUT_MODULE_NAME '_publish_v' + $env:VERSION
