@@ -1,0 +1,73 @@
+name: Release Project
+
+on:
+  workflow_call:
+    inputs:
+      module_name:
+        description: "Name of the published module."
+        required: true
+        type: string
+      publish_output_folder:
+        required: true
+        type: string
+        description: "Directory where the ouputs of dotnet publish command will be present."
+      project_path:
+        required: true
+        type: string
+        description: "Path to project file being published."
+    outputs:
+      artifact_name:
+        description: "Name of the generated artifact"
+        value: ${{ env.ARTIFACT_NAME }}
+
+jobs:
+  deploy:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set Variable VERSION
+      run: |
+         chcp 65001 #set code page to utf-8
+         $ver = $env:GITHUB_REF
+         echo ("Original GitHub ref: " + $ver)
+         $ver = $ver.replace('refs/tags/v', '')
+         echo ("VERSION=" + $ver) >> $env:GITHUB_ENV
+         echo ("Set VERSION variable to: " + $ver)
+         
+    - name: Set Variable ARTIFACT_NAME_MODULE_1
+      run: |
+         chcp 65001 #set code page to utf-8
+         $artifact_name = $env:INPUT_MODULE_NAME '_publish_v' + $env:VERSION
+         echo ("ARTIFACT_NAME=" + $artifact_name) >> $env:GITHUB_ENV
+         echo ("Set ARTIFACT_NAME variable to: " + $artifact_name)
+         
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore /p:Version=${{ env.VERSION }}
+      
+    - name: Publish
+      run: dotnet publish ${{ env.INPUT_PROJECT_PATH }} --no-restore -o ${{ env.INPUT_PUBLISH_OUTPUT_FOLDER }} /p:Version=${{ env.VERSION }}
+
+    - name: Create Artifacts
+      uses: actions/upload-artifact@v3
+      with: 
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.INPUT_PUBLISH_OUTPUT_FOLDER }}
+          if-no-files-found: error
+          
+    - name: Create zipped publish file
+      run: |
+        $compress = @{
+          Path = (Get-Item .).FullName + "/$env:INPUT_PUBLISH_OUTPUT_FOLDER/*"
+          DestinationPath = "$env:ARTIFACT_NAME.zip"
+        }
+        Compress-Archive @compress -Force
