@@ -58,19 +58,19 @@ jobs:
       run: dotnet build --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
-      run: dotnet publish ${{ env.INPUT_PROJECT_PATH }} --no-restore -o ${{ env.INPUT_PUBLISH_OUTPUT_FOLDER }} /p:Version=${{ env.VERSION }}
+      run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
       with: 
           name: ${{ env.ARTIFACT_NAME }}
-          path: ${{ env.INPUT_PUBLISH_OUTPUT_FOLDER }}
+          path: ${{ inputs.publish_output_folder }}
           if-no-files-found: error
           
     - name: Create zipped publish file
       run: |
         $compress = @{
-          Path = (Get-Item .).FullName + "/$env:INPUT_PUBLISH_OUTPUT_FOLDER/*"
+          Path = (Get-Item .).FullName + "/${{ inputs.publish_output_folder }}/*"
           DestinationPath = "$env:ARTIFACT_NAME.zip"
         }
         Compress-Archive @compress -Force
