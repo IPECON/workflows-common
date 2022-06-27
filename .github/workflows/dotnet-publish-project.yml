@@ -42,7 +42,7 @@ jobs:
     - name: Set Variable ARTIFACT_NAME
       run: |
          chcp 65001 #set code page to utf-8
-         $artifact_name = ${{ inputs.module_name }} + '_publish_v' + $env:VERSION
+         $artifact_name = '${{ inputs.module_name }}' + '_publish_v' + $env:VERSION
          echo ("ARTIFACT_NAME=" + $artifact_name) >> $env:GITHUB_ENV
          echo ("Set ARTIFACT_NAME variable to: " + $artifact_name)
          
