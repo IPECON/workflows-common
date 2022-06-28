@@ -10,7 +10,7 @@ on:
         required: false
     secrets:
       CI_TOKEN:
-        required: false
+        required: true
 
 jobs:
   build:
