@@ -2,6 +2,14 @@ name: .NET Test
 
 on:
   workflow_call:
+    inputs:
+      submodules:
+        type: boolean
+        default: false
+        required: false
+    secrets:
+      checkout_token:
+        required: false
 
 jobs:
   build:
@@ -10,6 +18,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      if: inputs.submodules == false
+      
+    - uses: actions/checkout@v3
+      if: inputs.submodules == true
+      with:
+        submodules: true
+        token: ${{ secrets.checkout_token }}
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
