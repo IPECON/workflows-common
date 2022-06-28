@@ -7,9 +7,9 @@ on:
         type: boolean
         default: false
         required: false
-    secrets:
       checkout_token:
         required: false
+        type: string
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
       if: inputs.submodules == true
       with:
         submodules: true
-        token: ${{ secrets.checkout_token }}
+        token: ${{ inputs.checkout_token }}
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
