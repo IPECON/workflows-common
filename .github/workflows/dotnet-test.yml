@@ -2,15 +2,6 @@ name: .NET Test
 
 on:
   workflow_call:
-    inputs:
-      submodules:
-        description: 'When set to true, a secret with name CI_TOKEN has to be inherited by this workflow.'
-        type: boolean
-        default: false
-        required: false
-    secrets:
-      CI_TOKEN:
-        required: true
 
 jobs:
   build:
@@ -19,10 +10,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        submodules: true
-        token: ${{ secrets.CI_TOKEN }}
-    
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
