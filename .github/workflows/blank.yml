@@ -1,0 +1,64 @@
+name: Create Release
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+      prerelease:
+        required: false
+        default: false
+        type: boolean
+      as_draft:
+        required: false
+        default: false
+        type: boolean
+        
+jobs: 
+  create_release:
+    runs-on: self-hosted
+    steps:
+    
+#    - uses: hmarr/debug-action@v2
+    
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ inputs.tag }}
+        release_name: Release ${{ inputs.tag }}
+        draft: ${{ inputs.as_draft }}
+        prerelease: ${{ inputs.prerelease }}
+    
+    - name: Upload artifacts as assets
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             run_id: context.payload.workflow_run.id,
+          });
+          for (const artifact of allArtifacts.data.artifacts)
+          {
+            let download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: artifact.id,
+               archive_format: 'zip',
+            });
+            
+            github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: ${{ steps.create_release.outputs.id }},
+              name: artifact.name,
+              data: download.data,
+            });
+            
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+          }
