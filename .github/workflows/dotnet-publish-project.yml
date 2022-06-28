@@ -66,11 +66,3 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ inputs.publish_output_folder }}
           if-no-files-found: error
-          
-    - name: Create zipped publish file
-      run: |
-        $compress = @{
-          Path = (Get-Item .).FullName + "/${{ inputs.publish_output_folder }}/*"
-          DestinationPath = "$env:ARTIFACT_NAME.zip"
-        }
-        Compress-Archive @compress -Force
