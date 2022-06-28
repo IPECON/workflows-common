@@ -14,10 +14,25 @@ on:
         required: false
         default: false
         type: boolean
+      trigger_conclusion:
+        description: "Conclusion of triggering workflow_run."
+        type: string
+        required: false
+        default: ""
         
 jobs: 
+  fail:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/github-script@v3
+        if: ${{ inputs.trigger_conclusion != 'success' && inputs.trigger_conclusion != "" }}
+        with:
+          script: |
+            core.setFailed('Trigger conclustion was not successful (' + '${{ inputs.trigger_conclusion }}' + ')')
+
   create_release:
     runs-on: self-hosted
+    if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == "" }}
     steps:
     
 #    - uses: hmarr/debug-action@v2
