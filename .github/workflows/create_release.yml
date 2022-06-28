@@ -32,7 +32,7 @@ jobs:
 
   create_release:
     runs-on: self-hosted
-    if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == "" }}
+    if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == '' }}
     steps:
     
 #    - uses: hmarr/debug-action@v2
