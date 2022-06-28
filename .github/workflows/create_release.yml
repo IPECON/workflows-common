@@ -31,6 +31,7 @@ jobs:
             core.setFailed('Trigger conclustion was not successful (' + '${{ inputs.trigger_conclusion }}' + ')')
 
   create_release:
+    needs: fail
     runs-on: self-hosted
     if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == '' }}
     steps:
