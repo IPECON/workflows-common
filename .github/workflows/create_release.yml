@@ -55,7 +55,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               release_id: ${{ steps.create_release.outputs.id }},
-              name: artifact.name,
+              name: artifact.name + '.zip',
               data: download.data,
             });
             
