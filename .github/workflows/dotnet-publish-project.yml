@@ -19,7 +19,7 @@ on:
         type: number
         default: 14
         required: false
-      architecture:
+      runtime:
         type: string
         default: ""
         required: false
@@ -60,18 +60,23 @@ jobs:
         dotnet-version: 6.0.x
         
     - name: Restore dependencies
+      if: ${{ inputs.runtime == '' }}
       run: dotnet restore
+      
+    - name: Restore dependencies with Runtime
+      if: ${{ inputs.runtime != '' }}
+      run: dotnet restore --runtime ${{ inputs.runtime }}
       
     - name: Build
       run: dotnet build --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
-      if: ${{ inputs.architecture == '' }}
+      if: ${{ inputs.runtime == '' }}
       run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
       
-    - name: Publish with Architecture
-      if: ${{ inputs.architecture != '' }}
-      run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --arch ${{ inputs.architecture }}
+    - name: Publish with Runtime
+      if: ${{ inputs.runtime != '' }}
+      run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }}
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
