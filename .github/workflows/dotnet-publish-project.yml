@@ -27,6 +27,10 @@ on:
         type: string
         default: 'Release'
         required: false
+      checkout_submodules:
+        type: boolean
+        default: false
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -41,7 +45,17 @@ jobs:
         artifact_name: ${{ env.ARTIFACT_NAME }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+      if: ${{ inputs.checkout_submodules == false }}
+      
+    - name: Checkout with Submodules
+      uses: actions/checkout@v3
+      if: ${{ inputs.checkout_submodules == true }}
+      with:
+        submodules: true
+        token: ${{ secrets.CI_TOKEN }}
+      
     - name: Set Variable VERSION
       run: |
          chcp 65001 #set code page to utf-8
