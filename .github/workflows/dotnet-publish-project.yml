@@ -27,6 +27,10 @@ on:
         type: string
         default: 'Release'
         required: false
+      skip_checkout:
+        type: boolean
+        default: false
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -42,6 +46,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      if: ${{ inputs.skip_checkout == false }}
     - name: Set Variable VERSION
       run: |
          chcp 65001 #set code page to utf-8
