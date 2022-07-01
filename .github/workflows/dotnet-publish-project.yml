@@ -66,11 +66,11 @@ jobs:
       run: dotnet build --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
-      if: ${{ inputs.architecture == "" }}
+      if: ${{ inputs.architecture == '' }}
       run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
       
     - name: Publish with Architecture
-      if: ${{ inputs.architecture != "" }}
+      if: ${{ inputs.architecture != '' }}
       run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --arch ${{ inputs.architecture }}
 
     - name: Create Artifacts
