@@ -19,6 +19,10 @@ on:
         type: number
         default: 14
         required: false
+      architecture:
+        type: string
+        default: ""
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -62,7 +66,12 @@ jobs:
       run: dotnet build --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
+      if: ${{ inputs.architecture == "" }}
       run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
+      
+    - name: Publish with Architecture
+      if: ${{ inputs.architecture != "" }}
+      run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --arch ${{ inputs.architecture }}
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
