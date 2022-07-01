@@ -23,6 +23,10 @@ on:
         type: string
         default: ""
         required: false
+      configuration:
+        type: string
+        default: 'Release'
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -68,15 +72,15 @@ jobs:
       run: dotnet restore --runtime ${{ inputs.runtime }}
       
     - name: Build
-      run: dotnet build --no-restore /p:Version=${{ env.VERSION }}
+      run: dotnet build --c ${{ inputs.configuration }} --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
       if: ${{ inputs.runtime == '' }}
-      run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
       
     - name: Publish with Runtime
       if: ${{ inputs.runtime != '' }}
-      run: dotnet publish ${{ inputs.project_path }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }}
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
