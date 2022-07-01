@@ -86,7 +86,7 @@ jobs:
       run: dotnet restore --runtime ${{ inputs.runtime }}
       
     - name: Build
-      run: dotnet build --c ${{ inputs.configuration }} --no-restore /p:Version=${{ env.VERSION }}
+      run: dotnet build -c ${{ inputs.configuration }} --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
       if: ${{ inputs.runtime == '' }}
