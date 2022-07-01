@@ -31,6 +31,10 @@ on:
         type: boolean
         default: false
         required: false
+      version_affix:
+        type: string
+        default: ""
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -64,6 +68,14 @@ jobs:
          $ver = $ver.replace('refs/tags/v', '')
          echo ("VERSION=" + $ver) >> $env:GITHUB_ENV
          echo ("Set VERSION variable to: " + $ver)
+     
+    - name: Add VERSION affix
+      if: ${{ inputs.version_affix != '' }}
+      run: |
+        $ver = '${{ env.VERSION }}'
+        $ver = $ver + '-${{ inputs.version_affix }}'
+        echo ("VERSION=" + $ver) >> $env:GITHUB_ENV
+        echo ("Update VERSION variable to: " + $ver)
          
     - name: Set Variable ARTIFACT_NAME
       run: |
