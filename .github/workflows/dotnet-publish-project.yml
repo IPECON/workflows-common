@@ -35,6 +35,10 @@ on:
         type: string
         default: ""
         required: false
+      environment:
+        type: string
+        default: ""
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -101,12 +105,20 @@ jobs:
       run: dotnet build -c ${{ inputs.configuration }} --no-restore /p:Version=${{ env.VERSION }}
       
     - name: Publish
-      if: ${{ inputs.runtime == '' }}
+      if: ${{ inputs.runtime == '' && inputs.environment == '' }}
       run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
       
     - name: Publish with Runtime
-      if: ${{ inputs.runtime != '' }}
+      if: ${{ inputs.runtime != '' && inputs.environment == '' }}
       run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }}
+      
+    - name: Publish with Environment
+      if: ${{ inputs.runtime == '' && inputs.environment != '' }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }}
+      
+    - name: Publish with Environment and Runtime
+      if: ${{ inputs.runtime != '' && inputs.environment != '' }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --runtime ${{ inputs.runtime }}
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
