@@ -106,19 +106,19 @@ jobs:
       
     - name: Publish
       if: ${{ inputs.runtime == '' && inputs.environment == '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --no-self-contained
       
     - name: Publish with Runtime
       if: ${{ inputs.runtime != '' && inputs.environment == '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }} --no-self-contained
       
     - name: Publish with Environment
       if: ${{ inputs.runtime == '' && inputs.environment != '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --no-self-contained
       
     - name: Publish with Environment and Runtime
       if: ${{ inputs.runtime != '' && inputs.environment != '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --runtime ${{ inputs.runtime }}
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --runtime ${{ inputs.runtime }} --no-self-contained
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
