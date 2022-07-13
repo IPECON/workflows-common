@@ -39,6 +39,10 @@ on:
         type: string
         default: ""
         required: false
+      publish_extra_commands:
+        type: string
+        default: ""
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -106,19 +110,19 @@ jobs:
       
     - name: Publish
       if: ${{ inputs.runtime == '' && inputs.environment == '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --no-self-contained
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --no-self-contained --nologo ${{ inputs.publish_extra_commands }}
       
     - name: Publish with Runtime
       if: ${{ inputs.runtime != '' && inputs.environment == '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }} --no-self-contained
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} --runtime ${{ inputs.runtime }} --no-self-contained --nologo ${{ inputs.publish_extra_commands }}
       
     - name: Publish with Environment
       if: ${{ inputs.runtime == '' && inputs.environment != '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --no-self-contained
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --no-self-contained --nologo ${{ inputs.publish_extra_commands }}
       
     - name: Publish with Environment and Runtime
       if: ${{ inputs.runtime != '' && inputs.environment != '' }}
-      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --runtime ${{ inputs.runtime }} --no-self-contained
+      run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --runtime ${{ inputs.runtime }} --no-self-contained --nologo ${{ inputs.publish_extra_commands }}
 
     - name: Create Artifacts
       uses: actions/upload-artifact@v3
