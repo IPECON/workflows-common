@@ -43,6 +43,10 @@ on:
         type: string
         default: ""
         required: false
+      dotnet_version:
+        type: string
+        default: "6.0.x"
+        required: false
     outputs:
       artifact_name:
         description: "Name of the generated artifact"
@@ -95,7 +99,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ inputs.dotnet_version }}
         
     - name: Restore dependencies
       if: ${{ inputs.runtime == '' }}
