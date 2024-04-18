@@ -129,7 +129,7 @@ jobs:
       run: dotnet publish ${{ inputs.project_path }} -c ${{ inputs.configuration }} --no-restore -o ${{ inputs.publish_output_folder }} /p:Version=${{ env.VERSION }} /p:EnvironmentName=${{ inputs.environment }} --runtime ${{ inputs.runtime }} --no-self-contained --nologo ${{ inputs.publish_extra_commands }}
 
     - name: Create Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with: 
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ inputs.publish_output_folder }}
