@@ -38,8 +38,21 @@ jobs:
 
     - name: Create GitHub Release
       id: create_release
+      shell: pwsh
       run: |
-        .\release.ps1 -Token ${{ secrets.GITHUB_TOKEN }} -Owner ${{ github.event.repository.owner }} -RepositoryName ${{ github.event.repository.name }} -TagName ${{ inputs.tag }} -AsDraft $${{ inputs.as_draft }}
+        Install-Module PSGitHub
+
+        $secureToken = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
+        $tagName = "${{ inputs.tag }}"
+
+        $preRelease = $false
+        if ($tagName.Contains('-')) {
+            $preRelease = $true
+        }
+
+        $asDraft = $${{ inputs.as_draft }}
+
+        New-GitHubRelease -RepositoryName ${{ github.event.repository.name }} -Owner ${{ github.event.repository.owner }} -TagName $tagName -Token $secureToken -PreRelease:$preRelease -Draft:$asDraft
     
     - name: Upload artifacts as assets
       uses: actions/github-script@v7
