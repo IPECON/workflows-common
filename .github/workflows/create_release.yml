@@ -36,6 +36,12 @@ jobs:
     if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == '' }}
     steps:
 
+    - name: Dump github context
+      run:   echo "$GITHUB_CONTEXT"
+      shell: bash
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
     - name: Create GitHub Release
       id: create_release
       shell: pwsh
@@ -53,7 +59,7 @@ jobs:
 
         $asDraft = $${{ inputs.as_draft }}
 
-        New-GitHubRelease -RepositoryName ${{ github.event.repository.name }} -Owner ${{ github.event.repository_owner }} -TagName $tagName -Token $secureToken -PreRelease:$preRelease -Draft:$asDraft
+        New-GitHubRelease -RepositoryName ${{ github.event.repository.name }} -Owner ${{ github.repository_owner }} -TagName $tagName -Token $secureToken -PreRelease:$preRelease -Draft:$asDraft
     
     - name: Upload artifacts as assets
       uses: actions/github-script@v7
