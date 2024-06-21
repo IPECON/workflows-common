@@ -41,7 +41,7 @@ jobs:
       shell: pwsh
       run: |
         Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-        Install-Module PSGitHub
+        Install-Module PSGitHub -Force
 
         $secureToken = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
         $tagName = "${{ inputs.tag }}"
