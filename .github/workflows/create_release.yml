@@ -34,8 +34,8 @@ jobs:
     
 #    - uses: hmarr/debug-action@v2
     - name: Determine prerelease
-        if: contains(inputs.tag, '-')
-        run: echo 'PRERELEASE=true' >> "$GITHUB_ENV"
+      if: contains(inputs.tag, '-')
+      run: echo 'PRERELEASE=true' >> "$GITHUB_ENV"
     
     - name: Create GitHub Release
       id: create_release
