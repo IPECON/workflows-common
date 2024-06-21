@@ -40,7 +40,7 @@ jobs:
       id: create_release
       shell: pwsh
       run: |
-        Install-Module PSGitHub
+        Install-Module PSGitHub -Force
 
         $secureToken = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
         $tagName = "${{ inputs.tag }}"
