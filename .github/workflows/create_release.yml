@@ -37,8 +37,8 @@ jobs:
     steps:
 
     - name: Dump github context
-      run:   echo "$GITHUB_CONTEXT"
-      shell: bash
+      run:   Write-Host "$GITHUB_CONTEXT"
+      shell: pwsh
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
 
