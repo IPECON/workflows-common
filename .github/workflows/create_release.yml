@@ -14,7 +14,6 @@ on:
         required: false
         default: false
         type: boolean
-        deprecationMessage: "This parameter is ignored. Prerelease flag is derived from tag input."
       trigger_conclusion:
         description: "Conclusion of triggering workflow_run."
         type: string
