@@ -6,34 +6,10 @@ on:
       tag:
         required: true
         type: string
-      as_draft:
-        required: false
-        default: false
-        type: boolean
-      prerelease: # deprecated/unused
-        required: false
-        default: false
-        type: boolean
-      trigger_conclusion:
-        description: "Conclusion of triggering workflow_run."
-        type: string
-        required: false
-        default: ""
         
 jobs: 
-  conditional_fail:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/github-script@v7
-        if: ${{ inputs.trigger_conclusion != 'success' && inputs.trigger_conclusion != '' }}
-        with:
-          script: |
-            core.setFailed('Trigger conclustion was not successful (' + '${{ inputs.trigger_conclusion }}' + ')')
-
   create_release:
-    needs: conditional_fail
     runs-on: self-hosted
-    if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == '' }}
     steps:
 
     - name: Create GitHub Release
@@ -51,9 +27,7 @@ jobs:
             $preRelease = $true
         }
 
-        $asDraft = $${{ inputs.as_draft }}
-
-        $release = New-GitHubRelease -RepositoryName ${{ github.event.repository.name }} -Owner ${{ github.event.repository.owner.login }} -TagName $tagName -Token $secureToken -PreRelease:$preRelease -Draft:$asDraft
+        $release = New-GitHubRelease -RepositoryName ${{ github.event.repository.name }} -Owner ${{ github.event.repository.owner.login }} -TagName $tagName -Token $secureToken -PreRelease:$preRelease
         Write-Output "releaseId=$($release.id)" >> $Env:GITHUB_OUTPUT
     
     - name: Upload artifacts as assets
