@@ -22,7 +22,7 @@ on:
         
 jobs: 
   conditional_fail:
-    runs-on: self-hosted
+    runs-on: [self-hosted, windows, x64]
     steps:
       - uses: actions/github-script@v3
         if: ${{ inputs.trigger_conclusion != 'success' && inputs.trigger_conclusion != '' }}
@@ -32,7 +32,7 @@ jobs:
 
   create_release:
     needs: conditional_fail
-    runs-on: self-hosted
+    runs-on: [self-hosted, windows, x64]
     if: ${{ inputs.trigger_conclusion == 'success' || inputs.trigger_conclusion == '' }}
     steps:
     
