@@ -97,7 +97,7 @@ jobs:
          echo ("Set ARTIFACT_NAME variable to: " + $artifact_name)
          
     - name: Setup .NET
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet_version }}
         
